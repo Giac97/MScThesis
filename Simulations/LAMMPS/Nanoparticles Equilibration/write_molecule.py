@@ -56,6 +56,7 @@ def write_lammps_molecule(inname, fname):
 
 
 xyz_names = []
+mol_names = []
 
 os.chdir("./NPs XYZ Models/")
 for file in glob.glob("*.xyz"):
@@ -82,3 +83,8 @@ def number_of_atoms(fname):
 def get_shape(fname):
     return fname.split("_")[1].split(".")[0]
 
+for np in xyz_names:
+    fname = get_element(np)+str(number_of_atoms(np))+get_shape(np) + ".molecule"
+    fname = "../molecules/" + fname
+    inname = np
+    write_lammps_molecule(inname, fname)
