@@ -1,0 +1,30 @@
+&simul
+  irand  = 3241,                  ! odd 4 digits number lower than 4095
+  tstep  = 5.d-15,                ! time step smaller than phonon frequencies, usually 1-7 fs
+  npas   = 2000,              ! total number of steps (200000=1ns)
+  scrivo = 200,                 ! after how many steps the program writes
+  npast  = 200,                  ! thermalization time
+  tinit  = 10,                   ! initial temperature 
+  vnu    = 5.d11,                 ! Andersen thermostat frequency (5.d11)
+  type_process = 'coalescence', 
+  filepos      = '',
+  filepot      = '../../../../LODIS-MD/POT_FILE/Au_Au.pot',                   ! 'potential file name' for RGL potential
+/
+
+&system
+  type_potential  = 'rgl',           ! potential type between LJ, RGL(for metallic systems), Girifalco 
+  natom           = 594,             ! Initial number of atoms in the cluster
+  fattor          = 1.d0,            ! leave it, stupid units conversion
+  elem1           = 'Au',            ! chemical species one
+  elem2           = 'Au',            ! chemical species two
+  sys             = 'mon',           ! put bim if it is bimetallic otherwise mon
+/
+
+&coal
+  filepos2 = 'Dh192_To201.xyz',
+  natom2 = 393,
+  ximpact = 0.0d0,
+  yimpact = 0.d0,
+  zimpact = 29.5d0, ! refers to filepos shift in z-axis
+  tcoll = 500.d0,
+/

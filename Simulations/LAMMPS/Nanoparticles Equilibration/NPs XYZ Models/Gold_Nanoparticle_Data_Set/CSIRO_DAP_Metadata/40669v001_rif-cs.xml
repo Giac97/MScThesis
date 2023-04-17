@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<registryObjects xmlns="http://ands.org.au/standards/rif-cs/registryObjects" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://ands.org.au/standards/rif-cs/registryObjects http://services.ands.org.au/home/orca/schemata/registryObjects.xsd">
+  <registryObject group="Commonwealth Scientific and Industrial Research Organisation">
+    <key>102.100.100/144144</key>
+    <originatingSource>https://data.csiro.au/dap/</originatingSource>
+    <collection type="dataset" dateAccessioned="2020-09-23T21:07:20+10:00">
+      <identifier type="local">102.100.100/144144</identifier>
+      <identifier type="doi">10.25919/5d395ef9a4291</identifier>
+      <name type="primary">
+        <namePart>Gold Nanoparticle Data Set</namePart>
+      </name>
+      <location>
+        <address>
+          <electronic type="url">
+            <value>http://hdl.handle.net/102.100.100/144144?index=1</value>
+          </electronic>
+        </address>
+      </location>
+      <citationInfo>
+        <citationMetadata>
+          <identifier type="doi">10.25919/5d395ef9a4291</identifier>
+          <title>Gold Nanoparticle Data Set</title>
+          <version>v1</version>
+          <publisher>Commonwealth Scientific and Industrial Research Organisation (CSIRO)</publisher>
+          <contributor seq="1">
+            <namePart type="family">Barnard</namePart>
+            <namePart type="given">Amanda</namePart>
+          </contributor>
+          <contributor seq="2">
+            <namePart type="family">Opletal</namePart>
+            <namePart type="given">George</namePart>
+          </contributor>
+          <date type="publicationDate">2019-07-25</date>
+        </citationMetadata>
+      </citationInfo>
+      <relatedObject>
+        <key>csiro:d6d96d45-319e-4071-b12e-8227e36f89fa</key>
+        <relation type="hasPrincipalInvestigator" />
+      </relatedObject>
+      <relatedObject>
+        <key>csiro:R-90760_IRP</key>
+        <relation type="hasAssociationWith" />
+      </relatedObject>
+      <relatedObject>
+        <key>csiro:PartyGroup</key>
+        <relation type="isManagedBy" />
+      </relatedObject>
+      <subject type="local">material, molecular dynamics, nanoparticle, nanostructure, computational, simulation, results, platinum, xyz, configurations, structures</subject>
+      <subject type="anzsrc-for">100799</subject>
+      <subject type="anzsrc-for">030307</subject>
+      <subject type="anzsrc-for">080199</subject>
+      <subject type="anzsrc-for">080109</subject>
+      <subject type="anzsrc-for">100708</subject>
+      <subject type="anzsrc-for">020499</subject>
+      <subject type="anzsrc-for">030799</subject>
+      <subject type="anzsrc-for">020403</subject>
+      <description type="brief">This is a set of 4000 gold (Au) nanoparticle FINAL CONFIGURATIONS, for use in data-driven studies. These structures have been optimized (fully relaxed) using molecular dynamics with an embedded atom (EAM) interatomic potential, at various temperatures and growth rates.
+
+All files are in XYZ format, and the naming convention is defined in the accompanying csv file that lists all of the structural features and property indicators (see Supporting Attachments).   
+
+Sizes range from 236 atoms to 14277 atoms, with both crystalline and non-crystalline configurations and regions. Each nanoparticle has been characterised using a variety of topological features, including size, lattice structure, surface curvature and a number of order parameters.  The final two columns are target labels, providing the total energy and the excess formtion energy.   Other features can also be used as labels as desired.</description>
+      <description type="lineage">Simulated by Amanda Barnard for the purposes of studying the impact of polydispersivity on the properties of gold nanoparticle ensembles.</description>
+      <relatedInfo type="">
+        <identifier type="uri">https://lammps.sandia.gov/</identifier>
+        <title>Simulation code</title>
+        <notes>These nanoparticles were simulated with molecular dynamics using the LAMMPS code.</notes>
+      </relatedInfo>
+      <relatedInfo type="">
+        <identifier type="uri">https://sites.google.com/site/eampotentials/Au</identifier>
+        <title>Interatomic potential</title>
+        <notes>These nanoparticles were simulated with molecular dynamics using the this EAM potential.</notes>
+      </relatedInfo>
+      <relatedInfo type="">
+        <identifier type="uri">https://pubs.rsc.org/en/content/articlelanding/2017/nr/c6nr06765d#!divAbstract</identifier>
+        <title>Publication describing the general method of data collection</title>
+        <notes>Hector Barron, George Opletal, Richard Tilley and Amanda Barnard</notes>
+      </relatedInfo>
+      <relatedInfo type="">
+        <identifier type="uri">https://pubs.rsc.org/en/Content/ArticleLanding/CY/2016/C5CY01205H#!divAbstract</identifier>
+        <title>Publication describing the general method of data colletion</title>
+        <notes>Hector Barron, George Opletal, Richard Tilley and Amanda Barnard</notes>
+      </relatedInfo>
+      <rights>
+        <rightsStatement>All Rights (including copyright) CSIRO 2019.</rightsStatement>
+        <licence type="CSIRO Data Licence" rightsUri="https://confluence.csiro.au/display/daphelp/CSIRO+Data+Licence">CSIRO Data Licence</licence>
+        <accessRights type="open">Data is accessible online and may be reused in accordance with licence conditions</accessRights>
+      </rights>
+    </collection>
+  </registryObject>
+</registryObjects>
+

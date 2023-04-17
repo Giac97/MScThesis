@@ -1,0 +1,115 @@
+! =========================
+! MolDyn_MS Input File
+! =========================
+
+&simul
+  irand  = 1001,                     ! odd 4 digits number lower than 4095
+  tstep  = 5.d-15,                   ! time step smaller than phonon frequencies, usually 1-7 fs
+  npas   = 2000000,                     ! total number of steps (2000000000)
+  scrivo = 2000,                       ! after how many steps the program writes
+  npast  = 1000,                     ! thermalization time
+  tinit  = 100,                      ! iCutial temperature 
+  type_process = 'quenching',        ! 'quenching' 'microcan' 'melting' 'freezing' 'growth' 'metadynamics'
+  mgo_substrate = .false.,           ! for the MgO force-field
+  geometry_type = 1
+  metal_on_top  = .false.,           ! for the MgO force-field with correction for the metal-on-top effect 
+  vnu    = 5.d11,                    ! Andersen thermostat frequency (5.d11)
+  sticky_atoms  = 0,                 ! Num atoms bound to their starting position by a spring (in './sticky.list')
+  sticky_k      = 10,                ! Elastic constant (F=-k*x) [eV/A^2]
+                                     !  
+  filepos      = 'deca.xyz',                         ! 'iCutial position file'
+  filepot      = '../../../LODIS-MD/POT_FILE/Au_Au2.pot',                  ! 'potential file name' for RGL potential
+  mgo_pot      = './Test_MS/Ni_Ni.MgO.pot',                  ! file of parameters for MgO substrate 
+  impl_env = .true.
+  pot_a = 1.5d0
+  pot_b = 1.5d0
+  eta_a = 0.02d0
+  eta_b = 0.02d0
+/
+
+&system
+  type_potential  = 'rgl',           ! potential type between LJ, RGL(for metallic systems), Girifalco 
+  natom           = 39,             ! ICutial number of atoms in the cluster
+  fattor          = 1.d0,            ! leave it, stupid uCuts conversion
+  elem1           = 'Au',            ! chemical species one
+  elem2           = 'Au',            ! chemical species two
+  sys             = 'mon',           ! put bim if it is bimetallic otherwise mon
+/
+
+  ! NAMELIST for the specific procedure chosen
+  ! &quench   : for quenching and microcanoCucal
+  ! &melt     : for any caloric simulation (both melting/freezing)
+  ! &growth   : for the one-by-one addition of atoms over the cluster
+  ! &metalist : for metadynamics and to compute CV values
+
+&melt
+  deltat          = 50.d0,            ! temperature step
+  tcaloric        = 1500.d0,          ! final temperature
+/
+
+&quench
+itremp = 40000
+tmin = 1.d-5
+/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
