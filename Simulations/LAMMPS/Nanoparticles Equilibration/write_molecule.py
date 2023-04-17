@@ -11,17 +11,30 @@ from ase.io import read
 import glob, os
 from dataclasses import dataclass
 
+@dataclass
+class nanoparticle:
+    """
+    Class used to store data about a nanoparticle, useful for analysis and also just to save the name automatically
+    Note, as of right now can only be used with mono-element nanoparticles
+    """
+    def __init__(self, n_atoms: int, shape: str, element: str, fname: str = ""):
+        self.n_atoms = n_atoms
+        self.shape = shape
+        self.element = element
+        self.fname = element + str(n_atoms) + shape
+        
+        
 
-
-'''
-Read an xyz file and produce a molecule file to be used in a LAMMPS simulation
-Parameters:
-    inname (string): the "xyz" file name
-    fname (string): the "molecule" file name
-Returns:
-    f: The molecule file
-'''
 def write_lammps_molecule(inname, fname):
+    
+    """
+    Read an xyz file and produce a molecule file to be used in a LAMMPS simulation
+    Parameters:
+        inname (string): the "xyz" file name
+        fname (string): the "molecule" file name
+    Returns:
+        f: The molecule file
+    """
     nano = read(inname)
     coords = []
     
@@ -47,4 +60,22 @@ xyz_names = []
 os.chdir("./NPs XYZ Models/")
 for file in glob.glob("*.xyz"):
     xyz_names.append(file)
+
+def get_element(fname):
+    return fname[0:2]
+
+def number_of_atoms(fname):
+    """
+    Given a filename returns the number of atoms, this requires a filename with the format ElNatoms_shape_otherdescription.xyz
+    Where El: element, Natoms: number of atoms, shape: the shape of the nanoparticle
+    """
+    
+    #isolate the part of the filename that contains the element and the number of atoms
+    contains_number = fname.split("_")[0]
+    
+    n_str = ""
+    for m in contains_number:
+        if m.isdigit():
+            n_str += m
+    return int(n_str)
 
