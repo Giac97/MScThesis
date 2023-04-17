@@ -79,3 +79,6 @@ def number_of_atoms(fname):
             n_str += m
     return int(n_str)
 
+def get_shape(fname):
+    return fname.split("_")[1].split(".")[0]
+
