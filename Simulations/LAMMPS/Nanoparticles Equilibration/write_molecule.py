@@ -47,3 +47,4 @@ xyz_names = []
 os.chdir("./NPs XYZ Models/")
 for file in glob.glob("*.xyz"):
     xyz_names.append(file)
+
