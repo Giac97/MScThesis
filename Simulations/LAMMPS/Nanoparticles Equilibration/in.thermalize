@@ -1,0 +1,31 @@
+# System definition
+dimension       3
+units           metal
+atom_style      atomic
+
+boundary        s s s
+
+lattice         fcc 4.079
+
+region          box block 0 10 0 10 0 10
+create_box      1 box
+
+#Interaction: EAM model
+pair_style      eam
+pair_coeff		* * Au_u3.eam 
+
+#Variable to store path to molecule
+variable        molname index molecules/Au459TO9-2.molecule
+
+#assign molecule file to lammps molecule
+molecule        np ${molname} 
+
+#create a single nanoparticle in middle of simulation box
+create_atoms    0 single 5 5 5 mol np 123567
+velocity        all create 300. 123789 rot yes dist gaussian
+
+thermo          1000
+thermo_style    custom step temp pe ke etotal vol 
+fix             1 all nvt temp 300.0 300.0 10.0
+dump            mydmp all custom 1000 dump/dump.thermalize x y z vx vy vz
+run             100000
