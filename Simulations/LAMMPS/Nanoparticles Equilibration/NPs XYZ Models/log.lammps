@@ -1,0 +1,65 @@
+LAMMPS (15 Sep 2022)
+OMP_NUM_THREADS environment is not set. Defaulting to 1 thread. (src/comm.cpp:98)
+  using 1 OpenMP thread(s) per MPI task
+Loaded 1 plugins from C:\Users\becat\AppData\Local\LAMMPS 64-bit 15Sep2022\plugins
+# System definition
+dimension       3
+units           metal
+atom_style      atomic
+
+boundary        s s s
+
+lattice         fcc 4.079
+Lattice spacing in x,y,z = 4.079 4.079 4.079
+
+region          box block 0 10 0 10 0 10
+create_box      1 box
+Created orthogonal box = (0 0 0) to (40.79 40.79 40.79)
+  1 by 1 by 1 MPI processor grid
+
+#Interaction: EAM model
+pair_style      eam
+pair_coeff		* * Au_u3.eam
+Reading eam potential file Au_u3.eam with DATE: 2007-06-11
+
+#Variable to store path to molecule
+variable        molname index molecules/Au459TO9-2.molecule
+
+#assign molecule file to lammps molecule
+molecule        np ${molname}
+molecule        np ../molecules/Au459TO9-2.molecule
+Read molecule template np:
+  1 molecules
+  0 fragments
+  459 atoms with max type 1
+  0 bonds with max type 0
+  0 angles with max type 0
+  0 dihedrals with max type 0
+  0 impropers with max type 0
+
+#create a single nanoparticle in middle of simulation box
+create_atoms    0 single 5 5 5 mol np 123567
+Created 459 atoms
+  using lattice units in orthogonal box = (7.8037767 7.7362583 7.5923807) to (32.986223 33.053742 33.197619)
+  create_atoms CPU = 0.000 seconds
+velocity        all create 300. 123789 rot yes dist gaussian
+
+thermo          1000
+thermo_style    custom step temp pe ke etotal vol
+fix             1 all nvt temp 300.0 300.0 10.0
+dump            mydmp all custom 1000 dump/dump.thermalize x y z vx vy vz
+run             100000
+Neighbor list info ...
+  update: every = 1 steps, delay = 10 steps, check = yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 7.55
+  ghost atom cutoff = 7.55
+  binsize = 3.775, bins = 7 7 7
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair eam, perpetual
+      attributes: half, newton on
+      pair build: half/bin/atomonly/newton
+      stencil: half/bin/3d
+      bin: standard
+ERROR on proc 0: Cannot open dump file (src/dump.cpp:609)
+Last command: run             100000

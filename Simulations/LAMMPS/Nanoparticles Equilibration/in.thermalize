@@ -27,6 +27,13 @@ velocity        all create 300. 123789 rot yes dist gaussian
 thermo          1000
 thermo_style    custom step temp pe ke etotal vol 
 fix             1 all nvt temp 300.0 300.0 10.0
-dump            mydmp all custom 1000 dump/dump.thermalize x y z vx vy vz
-run             100000
-write_data file pair value
+
+
+variable        dumpname index dump.thermalize
+
+dump            mydmp all custom 1000 ${dumpname} x y z vx vy vz
+run             50000
+undump          mydmp
+
+variable        outmolname index out.xyz
+write_dump      all xyz ${outmolname} modify sort id element Au
