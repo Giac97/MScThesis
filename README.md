@@ -14,3 +14,6 @@ The script write_molecule.py contains a simple function, called "write_lammps_mo
 
 ### Running Thermalization
 In the "./Simulations/LAMMPS/Nanoparticles Equilibration" folder another script is present, named "run_thermo.py" it goes through all the nanoparticles saved as molecule files in the "molecules" folder, and it runs a LAMMPS simulation at 300K for 25000 steps (25 ps) and it saves the "movie" of the simulation and a logfile. Both the movie and the logfile have unique names extraced from the nanoparticle's molecule filename
+
+### Some analysis tools
+A temporary python script has been added to "./Simulations/LAMMPS/Deposit/test" called "analysis_test.py", its purpose is right now simply to test the ovito package on python, right now it can calculate, given a snapshot of the deposited thin film, the filled volume and the filled fraction using the ConstructSurfaceMesh modifier.
