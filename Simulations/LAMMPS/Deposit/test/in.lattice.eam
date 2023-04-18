@@ -4,7 +4,7 @@ atom_style  atomic
 boundary p p f
 lattice fcc 4.079
 
-region box block 0 30 0 30 0 100
+region box block 0 30 0 30 0 120
 create_box 8 box
 region fixed block 0 30 0 30 0 1 side in
 create_atoms 1 region fixed
@@ -22,7 +22,7 @@ group free region free
 region nano1 block 0 30 0 30 11 35
 region nano2 block 0 30 0 30 11 60
 region nano3 block 0 30 0 30 15 80
-region nano4 block 0 30 0 30 15 100
+region nano4 block 0 30 0 30 80 120
 
 
 pair_style eam
@@ -31,6 +31,9 @@ velocity thermal create 300. 123789 rot yes dist gaussian
 
 fix th thermal temp/berendsen 300. 300. 10.
 fix mv fixed move linear 0 0 0
+
+
+
 molecule molec molecules/Au520MDh3-4-3.molecule.therm.molecule
 molecule nano2 molecules/Au1228mDh.molecule.therm.molecule
 molecule nano3 molecules/Au887MDh453.molecule.therm.molecule
@@ -59,7 +62,7 @@ thermo_style custom step temp pe ke etotal vol c_nanocom[3] c_ttherm c_tfree
 dump mydmp all custom 1000 dump/dump.lattice x y z vx vy vz type
 
 fix	1 all nve
-run 25000
+run 20000
 write_data lattice.firstdep
 
 create_atoms 3 random 10 123875 nano2 overlap 0.02 maxtry 150 mol molec 123789 
@@ -70,7 +73,7 @@ group nano type 4 5 6 7
 
 velocity nano set 0 0 -0.005
 
-run 25000
+run 20000
 create_atoms 3 random 10 323875 nano3 overlap 0.02 maxtry 150 mol molec 123789 
 create_atoms 4 random 15 745983 nano3 overlap 0.02 maxtry 15000 mol nano2 197345
 create_atoms 5 random 5 148993 nano3 overlap 0.02 maxtry 10550 mol nano3 197345
@@ -97,5 +100,6 @@ create_atoms 6 random 5 145995 nano4 overlap 0.01 maxtry 10550 mol nano4 197345
 group nano type 4 5 6 7 
 
 velocity nano set 0 0 -0.005
-run 100000
+run 20000
+write_data    finaldeposit.data  
 write_restart restart.lattice 
