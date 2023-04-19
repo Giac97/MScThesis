@@ -50,7 +50,7 @@ pipeline4 = import_file("./snapshots/fourthdep.xyz", columns=["Position.X", "Pos
 
 pipeline4.modifiers.append(ConstructSurfaceModifier(
     method = ConstructSurfaceModifier.Method.AlphaShape,
-    radius = 2.9,
+    radius = 1.9,
     identify_regions = True))
 
 

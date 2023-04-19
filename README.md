@@ -6,6 +6,16 @@ The folder structure is as follows:
 - Literature Review: contains the literature review with all the supporting media and bibliography
 - Simulations: contains the LAMMPS input scripts, outputs, dumps and nanoparticles models, it will also contains all the necessary scripts used to analyze the output data
 
+## Simulations
+Currently the Simulations folder contains, within the LAMMPS subfolder, a few test folders, these are supposed to contain inputs made to test various approaches before using them for the final simulation.
+
+### Test
+The "test" folder contains an input file which deposits nanoparticles of different shapes and sizes in N different steps: for each steps M nanoparticles (M_1 of size and shape si_1 sh_1, M_2 of size and shape si_2 sh_2...) are inserted in a region above the substrate at random locations with an initial downward velocity, then the simulation run for enough steps until they are at "rest" on the substrate, then this process is repeated N times.
+
+### Test 2
+The "test2" folder contains instead an input file which simulates the deposition of M nanoparticles of different sizes and shapes in a single step, after deposition the simulation is run for N steps with a shorter timestep to equilibrate the system. A simple python script "analysis_test.py", briefly described below, run a time series analysis of the system using the ovito package to find the filled fraction.
+
+
 ## Python scripts
 A few python scripts are present in this repository, primarily used for analysis purposes but also to prepare inputs and run simulations. Below a brief description of each is given
 
@@ -17,3 +27,4 @@ In the "./Simulations/LAMMPS/Nanoparticles Equilibration" folder another script 
 
 ### Some analysis tools
 A temporary python script has been added to "./Simulations/LAMMPS/Deposit/test" called "analysis_test.py", its purpose is right now simply to test the ovito package on python, right now it can calculate, given a snapshot of the deposited thin film, the filled volume and the filled fraction using the ConstructSurfaceMesh modifier.
+
