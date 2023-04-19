@@ -15,6 +15,8 @@ The "test" folder contains an input file which deposits nanoparticles of differe
 ### Test 2
 The "test2" folder contains instead an input file which simulates the deposition of M nanoparticles of different sizes and shapes in a single step, after deposition the simulation is run for N steps with a shorter timestep to equilibrate the system. A simple python script "analysis_test.py", briefly described below, run a time series analysis of the system using the ovito package to find the filled fraction.
 
+### Test 3
+The "test3" folder (to be created!!) contains test to check the viability of using Lennnard-Jones potentials in place of the more costly many bodies EAM potential in simulating the deposit. The idea would be to use LJ just for the deposit process and swith to EAM for the equilibration and other simulations (eg thermal conductivity)
 
 ## Python scripts
 A few python scripts are present in this repository, primarily used for analysis purposes but also to prepare inputs and run simulations. Below a brief description of each is given
