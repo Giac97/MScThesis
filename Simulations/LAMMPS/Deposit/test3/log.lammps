@@ -1,0 +1,192 @@
+LAMMPS (15 Sep 2022)
+OMP_NUM_THREADS environment is not set. Defaulting to 1 thread. (src/comm.cpp:98)
+  using 1 OpenMP thread(s) per MPI task
+Loaded 1 plugins from C:\Users\becat\AppData\Local\LAMMPS 64-bit 15Sep2022\plugins
+#Setting up the system
+dimension 3
+units metal
+atom_style  atomic
+boundary p p f
+
+#Setting up the simulation cell
+lattice fcc 4.079
+Lattice spacing in x,y,z = 4.079 4.079 4.079
+region box block 0 30 0 30 0 120
+create_box 8 box
+Created orthogonal box = (0 0 0) to (122.37 122.37 489.48)
+  1 by 1 by 1 MPI processor grid
+
+# Creating the fixed region
+# These atoms will be "frozen" to simulate bulk
+region fixed block 0 30 0 30 0 1 side in
+create_atoms 1 region fixed
+Created 5400 atoms
+  using lattice units in orthogonal box = (0 0 0) to (122.37 122.37 489.48)
+  create_atoms CPU = 0.001 seconds
+group fixed region fixed
+5400 atoms in group fixed
+
+# Atoms in the thermal region created below will be thermalized at 300K and kept at contant T by a Berendsen
+# thermostat
+region thermal block 0 30 0 30 1.1 5
+create_atoms 2 region thermal
+Created 14400 atoms
+  using lattice units in orthogonal box = (0 0 0) to (122.37 122.37 489.48)
+  create_atoms CPU = 0.011 seconds
+group thermal region thermal
+14400 atoms in group thermal
+
+# Atoms in the free region created below will have no constraint
+region free block 0 30 0 30 5.1 10
+create_atoms 3 region free
+Created 18000 atoms
+  using lattice units in orthogonal box = (0 0 0) to (122.37 122.37 489.48)
+  create_atoms CPU = 0.005 seconds
+
+group free region free
+18000 atoms in group free
+
+# Setting up different region where nanoparticles will be inserted
+region nano1 block 0 30 0 30 11 35
+region nano2 block 0 30 0 30 11 55
+region nano3 block 0 30 0 30 11 80
+region nano4 block 0 30 0 30 80 120
+
+# Defining interaction potential
+pair_style			lj/smooth/linear 3
+pair_coeff			* * 5.29 2.629
+
+
+neighbor			0.3 bin
+neigh_modify		every 100 delay 0 check yes
+
+mass				1 196.96
+mass                2 196.96
+mass                3 196.96
+mass                4 196.96
+mass                5 196.96
+mass                6 196.96
+mass                7 196.96
+mass                8 196.96
+
+# Initializing velocities for atoms in the thermal region
+velocity thermal create 300. 123789 rot yes dist gaussian
+velocity free create 300. 123789 rot yes dist gaussian
+
+# Coupling atoms in thermal region to a thermostat
+fix th thermal temp/berendsen 300. 300. 100.
+
+# Fixing positions of atoms in fixed region
+fix mv fixed move linear 0 0 0
+
+
+# Reading molecule files for the nps and assing them to a "molecule"
+molecule molec ../test/molecules/Au520MDh3-4-3.molecule.therm.molecule
+Read molecule template molec:
+  1 molecules
+  0 fragments
+  520 atoms with max type 1
+  0 bonds with max type 0
+  0 angles with max type 0
+  0 dihedrals with max type 0
+  0 impropers with max type 0
+molecule nano2 ../test/molecules/Au1228mDh.molecule.therm.molecule
+Read molecule template nano2:
+  1 molecules
+  0 fragments
+  1228 atoms with max type 1
+  0 bonds with max type 0
+  0 angles with max type 0
+  0 dihedrals with max type 0
+  0 impropers with max type 0
+molecule nano3 ../test/molecules/Au887MDh453.molecule.therm.molecule
+Read molecule template nano3:
+  1 molecules
+  0 fragments
+  887 atoms with max type 1
+  0 bonds with max type 0
+  0 angles with max type 0
+  0 dihedrals with max type 0
+  0 impropers with max type 0
+molecule nano4 ../test/molecules/Au147Ih.molecule.therm.molecule
+Read molecule template nano4:
+  1 molecules
+  0 fragments
+  147 atoms with max type 1
+  0 bonds with max type 0
+  0 angles with max type 0
+  0 dihedrals with max type 0
+  0 impropers with max type 0
+lattice	diamond 60
+Lattice spacing in x,y,z = 60 60 60
+
+# Inserting the nanoparticles
+create_atoms 3 random 1 133875 nano3 overlap 0.02 maxtry 150 mol molec 113789
+Created 520 atoms
+  using lattice units in orthogonal box = (0 0 0) to (122.37 122.37 489.48)
+  create_atoms CPU = 0.002 seconds
+create_atoms 4 random 0 115983 nano3 overlap 0.02 maxtry 15000 mol nano2 197345
+Created 0 atoms
+  using lattice units in orthogonal box = (0 0 0) to (122.37 122.37 489.48)
+  create_atoms CPU = 0.001 seconds
+create_atoms 5 random 0 143993 nano3 overlap 0.02 maxtry 10550 mol nano3 197345
+Created 0 atoms
+  using lattice units in orthogonal box = (0 0 0) to (122.37 122.37 489.48)
+  create_atoms CPU = 0.003 seconds
+create_atoms 6 random 0 145992 nano3 overlap 0.02 maxtry 10550 mol nano4 197345
+Created 0 atoms
+  using lattice units in orthogonal box = (0 0 0) to (122.37 122.37 489.48)
+  create_atoms CPU = 0.001 seconds
+
+write_data lattice.data
+System init for write_data ...
+Generated 0 of 28 mixed pair_coeff terms from geometric mixing rule
+Neighbor list info ...
+  update: every = 100 steps, delay = 0 steps, check = yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 3.3
+  ghost atom cutoff = 3.3
+  binsize = 1.65, bins = 75 75 297
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair lj/smooth/linear, perpetual
+      attributes: half, newton on
+      pair build: half/bin/atomonly/newton
+      stencil: half/bin/3d
+      bin: standard
+group nano type 4 5 6 7
+520 atoms in group nano
+
+velocity nano set 0 0 -0.005
+
+compute nanocom nano com
+compute ttherm thermal temp
+compute tfree free temp
+
+timestep 0.01
+
+neigh_modify exclude group fixed fixed
+
+thermo 10
+thermo_style custom step temp pe ke etotal vol c_nanocom[3] c_ttherm c_tfree
+
+dump        mydmp all custom 10 dump/dump.singledep x y z vx vy vz type
+
+fix	        1 free nve
+fix	        2 nano nve
+
+run         25000
+Generated 0 of 28 mixed pair_coeff terms from geometric mixing rule
+Per MPI rank memory allocation (min/avg/max) = 22.84 | 22.84 | 22.84 Mbytes
+   Step          Temp          PotEng         KinEng         TotEng         Volume      c_nanocom[3]     c_ttherm       c_tfree    
+         0   253.74085      56901.324      1256.8087      58158.133      7329677.6      296.63446      300            300          
+        10   6.0456608e+15  40412.335      2.9944881e+16  2.9944881e+16  7329677.6      296.60446      300            6208.5012    
+        20   6.0456895e+15  33736.637      2.9945023e+16  2.9945023e+16  7329677.6      296.57446      300            8927.0308    
+        30   6.0456895e+15  31969.506      2.9945023e+16  2.9945023e+16  7329677.6      296.54446      300            9685.7327    
+        40   6.0456895e+15  29895.041      2.9945023e+16  2.9945023e+16  7329677.6      296.51446      300            10576.919    
+        50   6.0456895e+15  28535.83       2.9945023e+16  2.9945023e+16  7329677.6      296.48446      300            11163.383    
+        60   6.0456895e+15  27169.964      2.9945023e+16  2.9945023e+16  7329677.6      296.45446      300            11751.858    
+        70   6.0456895e+15  25694.441      2.9945023e+16  2.9945023e+16  7329677.6      296.42446      300            12387.412    
+        80   6.0456895e+15  24115.331      2.9945023e+16  2.9945023e+16  7329677.6      296.39446      300            13066.475    
+        90   6.0456895e+15  23873.421      2.9945023e+16  2.9945023e+16  7329677.6      296.36446      300            13172.229    
+ERROR: Lost atoms: original 38320 current 38183 (src/thermo.cpp:481)
+Last command: run         25000
