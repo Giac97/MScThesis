@@ -38,16 +38,29 @@ def shrink_modify(frame: int, data: DataCollection):
     data.create_cell(matrix, (False, False, False))
 
 
-pipeline = import_file("./snapshot/equil_step400-500.xyz")
+pipeline = import_file("./dump/dump.equil.nps")
 
 pipeline.modifiers.append(shrink_modify)
 
-pipeline.modifiers.append(ConstructSurfaceModifier(radius = 2.9, identify_regions = True))
-pipeline.modifiers.append(TimeSeriesModifier(operate_on = 'ConstructSurfaceMesh.void_volume'))
-# pipeline.modifiers.append(PolyhedralTemplateMatchingModifier(output_orientation=True))
-# pipeline.modifiers.append(GrainSegmentationModifier())
-# pipeline.modifiers.append(TimeSeriesModifier(operate_on = 'GrainSegmentation.grain_count'))
-data = pipeline.compute()
-series = data.tables['time-series']
+# pipeline.modifiers.append(ConstructSurfaceModifier(radius = 2.9, identify_regions = True))
+# pipeline.modifiers.append(TimeSeriesModifier(operate_on = 'ConstructSurfaceMesh.void_volume'))
+# # pipeline.modifiers.append(PolyhedralTemplateMatchingModifier(output_orientation=True))
+# # pipeline.modifiers.append(GrainSegmentationModifier())
+# # pipeline.modifiers.append(TimeSeriesModifier(operate_on = 'GrainSegmentation.grain_count'))
+# data = pipeline.compute()
+# series = data.tables['time-series']
 
-plt.plot(series.x[:],series.y[:])
+thick = []
+
+for i in range(pipeline.source.num_frames):
+    data = pipeline.compute(i)
+    th = max(data.particles['Position'][:,2]) - min(data.particles['Position'][:,2])
+    thick.append(th)
+
+plt.figure(figsize=(10,6), dpi = 300)
+plt.plot(thick)
+plt.xlabel("Timestep")
+plt.ylabel("Thickness [Angstrom]")
+plt.grid()
+plt.xticks(np.arange(0, pipeline.source.num_frames+10, 10))
+# plt.plot(series.x[:],series.y[:])

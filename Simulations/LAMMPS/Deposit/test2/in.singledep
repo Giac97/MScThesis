@@ -49,17 +49,17 @@ fix mv fixed move linear 0 0 0
 
 
 # Reading molecule files for the nps and assing them to a "molecule"
-molecule molec ../test/molecules/Au520MDh3-4-3.molecule.therm.molecule
-molecule nano2 ../test/molecules/Au1228mDh.molecule.therm.molecule
-molecule nano3 ../test/molecules/Au887MDh453.molecule.therm.molecule
-molecule nano4 ../test/molecules/Au147Ih.molecule.therm.molecule
+molecule molec ../test/molecules/Au531MDh462.molecule.therm.molecule
+molecule nano2 ../test/molecules/Au236spmdh.molecule.therm.molecule
+molecule nano3 ../test/molecules/Au976To.molecule.therm.molecule
+molecule nano4 ../test/molecules/Au92moreIhlike.molecule.therm.molecule
 lattice	diamond 60
 
 # Inserting the nanoparticles
-create_atoms 3 random 35 133875 nano3 overlap 0.01 maxtry 150 mol molec 113789 
-create_atoms 4 random 20 115983 nano3 overlap 0.01 maxtry 15000 mol nano2 197345
-create_atoms 5 random 25 143993 nano3 overlap 0.01 maxtry 10550 mol nano3 197345
-create_atoms 6 random 15 145992 nano3 overlap 0.01 maxtry 10550 mol nano4 197345
+create_atoms 3 random 15 123875 nano1 overlap 0.02 maxtry 150 mol molec 123789 
+create_atoms 4 random 12 145983 nano1 overlap 0.02 maxtry 15000 mol nano2 197345
+create_atoms 5 random 11 145993 nano1 overlap 0.01 maxtry 10550 mol nano3 197345
+create_atoms 6 random 5 145993 nano1 overlap 0.007 maxtry 10550 mol nano4 197345
 
 write_data lattice.data
 group nano type 4 5 6 7 
@@ -77,25 +77,27 @@ neigh_modify exclude group fixed fixed
 thermo 100
 thermo_style custom step temp pe ke etotal vol c_nanocom[3] c_ttherm c_tfree
 
-dump        mydmp all custom 100 dump/dump.singledep x y z vx vy vz type
+dump        mydmp all custom 1000 dump/dump.singledep x y z vx vy vz type
+dump        nanodmp nano custom 100 dump/dump.onlynano x y z vx vy vz type
 
 fix	        1 free nve
 fix	        2 nano nve
-
+fix         3 thermal nvt temp 300. 300. 100.
 run         25000
 write_data  lattice.firstdep
 undump      mydmp
+undump      nanodmp
 
-reset_timestep 0
-unfix       mv
-timestep    0.001
-fix         mv fixed move linear 0 0 0
+ reset_timestep 0
+ unfix       mv
+ timestep    0.001
+ fix         mv fixed move linear 0 0 0
 
-dump        mydmp all custom 500 dump/dump.equil.film x y z vx vy vz type
-dump        mydmp_light nano custom 100 dump/dump.equil.light x y z 
+ dump        mydmp all custom 500 dump/dump.equil.film x y z vx vy vz type
+ dump        mydmp_light nano custom 100 dump/dump.equil.nps x y z
 
-run         50000 
-write_data  lattice.equil 
+ run         50000 
+ write_data  lattice.equil 
 
 
 
