@@ -1,0 +1,33 @@
+read_restart        restart.lattice
+
+pair_style          eam
+pair_coeff          * * ../test/Au.eam
+
+group               nano type 4 5 6 7 
+
+group               fixed type 1
+group               thermal type 2
+group               free type 3
+
+velocity            free create 300. 123189 rot yes dist gaussian
+velocity            nano create 300. 123589 rot yes dist gaussian
+
+
+fix                 th thermal nvt temp 300. 300. 100.
+fix                 mv fixed move linear 0 0 0
+
+neigh_modify        exclude group fixed fixed 
+thermo              100
+compute             nanocom nano com 
+compute             ttherm thermal temp
+compute             tfree free temp
+
+thermo_style        custom step temp pe ke etotal vol c_nanocom[3] c_ttherm c_tfree
+
+fix                 1 nano nve
+fix                 2 free nve 
+dump                mydmp all custom 500 dump/dump.equil.film x y z vx vy vz type
+dump                mydmp_light nano custom 100 dump/dump.equil.nps x y z
+
+run                 100000
+write_restart       equil.restart 

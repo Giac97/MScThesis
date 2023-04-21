@@ -34,8 +34,8 @@ region nano3 block 0 30 0 30 11 80
 region nano4 block 0 30 0 30 80 120
 
 # Defining interaction potential
-pair_style			lj/smooth/linear 10
-pair_coeff			* * 5.29 2.629 
+pair_style			lj/cut 8.0
+pair_coeff			* * 5.29 2.62904
 
 
 neighbor			0.3 bin
@@ -66,13 +66,17 @@ molecule molec ../test/molecules/Au520MDh3-4-3.molecule.therm.molecule
 molecule nano2 ../test/molecules/Au1228mDh.molecule.therm.molecule
 molecule nano3 ../test/molecules/Au887MDh453.molecule.therm.molecule
 molecule nano4 ../test/molecules/Au147Ih.molecule.therm.molecule
+
+#create_atoms 3 single 15 15 14 mol molec 113789 
+
 lattice	diamond 60
 
 # Inserting the nanoparticles
-create_atoms 3 random 1 133875 nano3 overlap 0.02 maxtry 150 mol molec 113789 
-create_atoms 4 random 0 115983 nano3 overlap 0.02 maxtry 15000 mol nano2 197345
-create_atoms 5 random 0 143993 nano3 overlap 0.02 maxtry 10550 mol nano3 197345
-create_atoms 6 random 0 145992 nano3 overlap 0.02 maxtry 10550 mol nano4 197345
+create_atoms 3 random 1 133875 nano1 overlap 0.02 maxtry 150 mol molec 113789 
+create_atoms 4 random 1 115983 nano3 overlap 0.02 maxtry 15000 mol nano2 197345
+create_atoms 5 random 1 143993 nano3 overlap 0.02 maxtry 10550 mol nano3 197345
+create_atoms 6 random 1 145992 nano3 overlap 0.02 maxtry 10550 mol nano4 197345
+
 
 write_data lattice.data
 group nano type 4 5 6 7 
@@ -83,17 +87,18 @@ compute nanocom nano com
 compute ttherm thermal temp
 compute tfree free temp
 
-timestep 0.01
+timestep 0.001
 
 neigh_modify exclude group fixed fixed 
 
-thermo 10
+thermo 100
 thermo_style custom step temp pe ke etotal vol c_nanocom[3] c_ttherm c_tfree
 
-dump        mydmp all custom 10 dump/dump.singledep x y z vx vy vz type
+dump        mydmp all custom 100 dump/dump.singledep x y z vx vy vz type
 
 fix	        1 free nve
 fix	        2 nano nve
+fix         3 thermal nvt temp 300. 300. 100.
 
 run         25000
 write_data  lattice.firstdep
