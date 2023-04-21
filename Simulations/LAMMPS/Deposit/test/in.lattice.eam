@@ -4,25 +4,27 @@ atom_style  atomic
 boundary p p f
 lattice fcc 4.079
 
-region box block 0 30 0 30 0 120
+region box block 0 30 0 30 0 80
 create_box 8 box
-region fixed block 0 30 0 30 0 1 side in
-create_atoms 1 region fixed
-group fixed region fixed
 
-region thermal block 0 30 0 30 1.1 5
+
+region fixed block 0 INF 0 INF 0 1 side in
+ create_atoms 1 region fixed
+ group fixed region fixed
+region thermal block 0 INF 0 INF 1.1 5
 create_atoms 2 region thermal
 group thermal region thermal
 
-region free block 0 30 0 30 5.1 10
+region free block 0 INF 0 INF 5.1 10
 create_atoms 3 region free
 
 group free region free
 
-region nano1 block 0 30 0 30 11 35
-region nano2 block 0 30 0 30 11 60
-region nano3 block 0 30 0 30 15 80
-region nano4 block 0 30 0 30 20 120
+region nano1 block 0 INF 0 INF 11 25
+region nano2 block 0 INF 0 INF 11 35
+region nano3 block 0 INF 0 INF 12 45
+region nano4 block 0 INF 0 INF 12 50
+region nano5 block 0 INF 0 INF 12 55 
 
 
 pair_style eam
@@ -32,19 +34,20 @@ velocity thermal create 300. 123789 rot yes dist gaussian
 fix th thermal temp/berendsen 300. 300. 10.
 fix mv fixed move linear 0 0 0
 
+neigh_modify exclude group fixed fixed 
 
 
-molecule molec molecules/Au520MDh3-4-3.molecule.therm.molecule
-molecule nano2 molecules/Au1228mDh.molecule.therm.molecule
-molecule nano3 molecules/Au887MDh453.molecule.therm.molecule
-molecule nano4 molecules/Au147Ih.molecule.therm.molecule
+molecule nano1 ../test/molecules/Au531MDh462.molecule.therm.molecule
+molecule nano2 ../test/molecules/Au236spmdh.molecule.therm.molecule
+molecule nano3 ../test/molecules/Au976To.molecule.therm.molecule
+molecule nano4 ../test/molecules/Au92moreIhlike.molecule.therm.molecule
 lattice	diamond 60
 
 # First deposition step
-create_atoms 3 random 10 123875 nano1 overlap 0.02 maxtry 150 mol molec 123789 
-create_atoms 4 random 15 145983 nano1 overlap 0.02 maxtry 15000 mol nano2 197345
-create_atoms 5 random 5 145993 nano1 overlap 0.01 maxtry 10550 mol nano3 197345
-create_atoms 6 random 5 145993 nano1 overlap 0.01 maxtry 10550 mol nano4 197345
+create_atoms 3 random 13 313875 nano1 overlap 0.02 maxtry 150 mol nano1 123789 
+create_atoms 4 random 9 542983 nano1 overlap 0.02 maxtry 15000 mol nano2 197345
+create_atoms 5 random 8 645353 nano1 overlap 0.01 maxtry 10550 mol nano3 197345
+create_atoms 6 random 5 545997 nano1 overlap 0.007 maxtry 10550 mol nano4 197345
 
 write_data lattice.data
 group nano type 4 5 6 7 
@@ -62,15 +65,17 @@ thermo_style custom step temp pe ke etotal vol c_nanocom[3] c_ttherm c_tfree
 
 dump mydmp all custom 1000 dump/dump.lattice x y z vx vy vz type
 
-fix	1 all nve
-run 20000
+fix	        1 free nve
+fix	        2 nano nve
+fix         3 thermal nvt temp 300. 300. 100.
+run 15000
 write_data lattice.firstdep
 
 # Second deposition step
-create_atoms 3 random 10 123875 nano2 overlap 0.02 maxtry 150 mol molec 123789 
-create_atoms 4 random 15 145983 nano2 overlap 0.02 maxtry 15000 mol nano2 197345
-create_atoms 5 random 5 145993 nano2 overlap 0.02 maxtry 10550 mol nano3 197345
-create_atoms 6 random 5 145993 nano2 overlap 0.01 maxtry 10550 mol nano4 197345
+create_atoms 3 random 13 123875 nano2 overlap 0.02 maxtry 150 mol nano1 121789 
+create_atoms 4 random 9 535983 nano2 overlap 0.02 maxtry 15000 mol nano2 117345
+create_atoms 5 random 8 155953 nano2 overlap 0.01 maxtry 10550 mol nano3 297345
+create_atoms 6 random 5 147997 nano2 overlap 0.007 maxtry 10550 mol nano4 397345
 group nano type 4 5 6 7 
 
 velocity nano set 0 0 -0.005
@@ -78,35 +83,47 @@ velocity nano set 0 0 -0.005
 run 20000
 
 # Third deposition step
-create_atoms 3 random 10 323875 nano3 overlap 0.02 maxtry 150 mol molec 123789 
-create_atoms 4 random 15 745983 nano3 overlap 0.02 maxtry 15000 mol nano2 197345
-create_atoms 5 random 5 148993 nano3 overlap 0.02 maxtry 10550 mol nano3 197345
-create_atoms 6 random 5 145995 nano3 overlap 0.01 maxtry 10550 mol nano4 197345
+create_atoms 3 random 13 323875 nano3 overlap 0.02 maxtry 150 mol nano1 123782
+create_atoms 4 random 9 515983 nano3 overlap 0.02 maxtry 15000 mol nano2 197343
+create_atoms 5 random 8 135953 nano3 overlap 0.01 maxtry 10550 mol nano3 197341
+create_atoms 6 random 5 345997 nano3 overlap 0.007 maxtry 10550 mol nano4 192345
 group nano type 4 5 6 7 
 
 velocity nano set 0 0 -0.005
 
 write_data lattice.seconddep
-run 50000
+run 25000
 
 # Fourth deposition step
-create_atoms 3 random 10 323875 nano3 overlap 0.02 maxtry 150 mol molec 123789 
-create_atoms 4 random 15 745983 nano3 overlap 0.02 maxtry 15000 mol nano2 197345
-create_atoms 5 random 5 148993 nano3 overlap 0.02 maxtry 10550 mol nano3 197345
-create_atoms 6 random 5 145995 nano3 overlap 0.01 maxtry 10550 mol nano4 197345
+create_atoms 3 random 13 123875 nano4 overlap 0.02 maxtry 150 mol nano1 121789 
+create_atoms 4 random 9 545983 nano4 overlap 0.02 maxtry 15000 mol nano2 197345
+create_atoms 5 random 8 145753 nano4 overlap 0.01 maxtry 10550 mol nano3 197345
+create_atoms 6 random 5 165997 nano4 overlap 0.007 maxtry 10550 mol nano4 197345
 group nano type 4 5 6 7 
 
 velocity nano set 0 0 -0.005
-run 50000
+run 30000
 
 # Fifth deposition step
-create_atoms 3 random 10 323875 nano4 overlap 0.02 maxtry 150 mol molec 123789 
-create_atoms 4 random 15 745983 nano4 overlap 0.02 maxtry 15000 mol nano2 197345
-create_atoms 5 random 5 148993 nano4 overlap 0.02 maxtry 10550 mol nano3 197345
-create_atoms 6 random 5 145995 nano4 overlap 0.01 maxtry 10550 mol nano4 197345
+create_atoms 3 random 13 323875 nano5 overlap 0.02 maxtry 150 mol nano1 123789 
+create_atoms 4 random 9 545983 nano5 overlap 0.02 maxtry 15000 mol nano2 197345
+create_atoms 5 random 8 145953 nano5 overlap 0.01 maxtry 10550 mol nano3 197345
+create_atoms 6 random 5 145997 nano5 overlap 0.007 maxtry 10550 mol nano4 197345
 group nano type 4 5 6 7 
 
 velocity nano set 0 0 -0.005
-run 50000
+run 35000
 write_data    finaldeposit.data  
 write_restart restart.lattice 
+
+unfix       mv
+undump mydmp
+
+timestep    0.001
+fix         mv fixed move linear 0 0 0
+
+dump        mydmp all custom 1000 dump/dump.equil.film x y z vx vy vz type
+dump        mydmp_light nano custom 100 dump/dump.equil.nps x y z
+
+run         100000 
+write_data  lattice.equil 
