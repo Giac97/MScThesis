@@ -1,4 +1,5 @@
 read_restart        restart.lattice
+reset_timestep     0
 
 pair_style          eam
 pair_coeff          * * ../test/Au.eam
@@ -17,17 +18,19 @@ fix                 th thermal nvt temp 300. 300. 100.
 fix                 mv fixed move linear 0 0 0
 
 neigh_modify        exclude group fixed fixed 
-thermo              100
 compute             nanocom nano com 
 compute             ttherm thermal temp
 compute             tfree free temp
+variable            thick equal bound(nano,zmax)-bound(nano,zmin)
 
-thermo_style        custom step temp pe ke etotal vol c_nanocom[3] c_ttherm c_tfree
+thermo_style        custom step temp pe ke etotal vol c_nanocom[3] c_ttherm c_tfree v_thick
+thermo              10
 
 fix                 1 nano nve
 fix                 2 free nve 
 dump                mydmp all custom 500 dump/dump.equil.film x y z vx vy vz type
 dump                mydmp_light nano custom 100 dump/dump.equil.nps x y z
 
+timestep            0.001
 run                 100000
 write_restart       equil.restart 
