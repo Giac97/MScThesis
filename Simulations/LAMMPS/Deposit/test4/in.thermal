@@ -1,0 +1,54 @@
+read_restart        equil.restart
+reset_timestep     0
+
+pair_style          eam
+pair_coeff          * * ../test/Au.eam
+
+
+group               nano type 4 5 6 7 
+group               fixed type 1
+group               thermal type 2
+group               free type 3
+
+variable            topfilm equal bound(nano,zmax)
+lattice             fcc 4.079 
+
+region              film block INF INF INF INF 10.25 ${topfilm}
+group               film region film
+
+region              hot block INF 5 INF INF 10.25 ${topfilm}
+group               hot region hot
+
+region              cold block 25.1 INF INF INF 10.25 ${topfilm}
+group               cold region cold
+
+region              mid block 5.1 25 INF INF 10.25 ${topfilm} 
+group               mid region mid
+
+fix                 1 nano nve
+fix                 4 hot langevin 500 500 0.01 699483 tally yes
+fix                 11 cold langevin 400 400 0.01 890765 tally yes
+
+compute             nke nano ke/atom 
+variable            temp atom (c_nke)/1.5*1.6/1.3806503*10000
+
+compute             midtemp mid temp
+compute             hotemp hot temp
+compute             cotemp cold temp
+
+compute             cc1 film chunk/atom bin/1d x lower 0.005 units reduced
+fix                 33 all ave/chunk 1 200000 400000 cc1 v_temp file all200.profile
+fix                 th thermal nvt temp 300. 300. 100.
+fix                 mv fixed move linear 0 0 0
+
+thermo              100
+thermo_style        custom step ke pe etotal temp c_midtemp c_cotemp c_hotemp
+
+dump                5 all custom 2000 cfg/thermalcfg.cfg id type x y z vx vy vz
+
+
+run                 400000
+write_restart       first_thermo.restart 
+
+
+
