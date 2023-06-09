@@ -21,6 +21,12 @@ The "test3" folder contains test to check the viability of using Lennnard-Jones 
 ### Test 4
 The "test4" fodler contains an input file used to start a simulation from the restart file generated at the end of the deposition phase in the "test" folder
 
+### Test 5
+The folder named "test5" contains an input file which thermostates two extremes of the film at different temperatures to study transport of heat. It also perform spatial binning.
+
+### Test 6
+Experimenting with two electrodes and walls
+
 ### 
 ## Python scripts
 A few python scripts are present in this repository, primarily used for analysis purposes but also to prepare inputs and run simulations. Below a brief description of each is given
