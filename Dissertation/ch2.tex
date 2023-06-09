@@ -1,0 +1,23 @@
+\chapter{Background}
+\lipsum[1]
+\section{Nanoparticles}
+\lipsum[1]
+
+\section{Molecular Dynamics}
+Molecular dynamics is a powerful tool capable of solving the N body problem of statistical mechanics \cite{Haile1997}, by simulating the motion of individual molecules (where here by molecules we refer to the basic components of the simulation which can be molecules, inidividual atoms or even objects of arbitrary geometric shapes \cite{Allen2017, LAMMPS}).
+At its core the main idea behind molecular dynamics is quite simple, with the most basic simulation only requiring an assembly of molecules with some initial conditions such as their positions in space or their intial velocities and a schema for their reciprocal interactions. Then the equations of motion for such a system are then solved numerically for each molecule to obtain their evolution in time \cite{Haile1997}. While the trajectory of the molecules in itself is rather meaningless, the key concept is that we are then able to obtain the equilibrium and transport properties of the system under consideration \cite{Frenkel1996}.\newline
+
+\subsection{Integration Algorithms}
+
+\subsubsection{Velocity Verlet}
+\begin{subequations}
+\label{eq:velverlet}
+\begin{align}
+x(t+\Delta t) &= x(t) + v(t)  \Delta t  + \frac{1}{2} a(t)\Delta t^2\label{eq:posverlet}\\
+v(t + \Delta) &= v(t) + \frac{a(t+\Delta t) + a(t)}{2}\Delta t \label{eq:veloverlet}
+\end{align}
+\end{subequations}
+\subsection{Interaction Potential}
+\subsubsection{Lennard Jones}
+\subsubsection{Embedded Atom Model}
+\section{Experimental results}
