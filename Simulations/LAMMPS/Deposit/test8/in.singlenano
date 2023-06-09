@@ -1,0 +1,104 @@
+dimension 3
+units metal
+atom_style  full
+boundary p p s
+lattice fcc 4.079
+
+variable l equal 20.
+variable half equal $l/2.0
+
+region box block 0 $l 0 $l 0 50
+create_box 4 box
+
+region fixed block 0 INF 0 INF 0 1 side in
+create_atoms 1 region fixed
+group fixed type 1
+
+region thermal block 0 INF 0 INF 1.1 5
+create_atoms 2 region thermal
+group thermal type 2
+
+region free block 0 INF 0 INF 5.1 10
+create_atoms 3 region free
+group free type 3
+
+
+pair_style smatb/single
+pair_coeff * * 2.885 10.139 4.033 0.209570656 1.8152764 4.09004704374 5.00926414057 
+mass        * 196.96657 
+
+#pair_style eam 
+#pair_coeff * * ../test/Au.eam
+
+
+
+velocity thermal create 300. 123789 rot yes dist gaussian
+
+fix mv fixed move linear 0 0 0
+neigh_modify exclude group fixed fixed 
+
+variable            nevery index 1
+variable            nrep index 100
+variable            nfreq index 1000
+
+molecule            4 ../test/molecules/Au1289To.molecule.therm.molecule
+
+
+create_atoms        3 single ${half} ${half} 15 mol 4 121789 
+group               nano type 4
+
+compute         cmol nano chunk/atom molecule
+
+compute         comnano nano com/chunk cmol
+
+compute         gyr nano gyration/chunk cmol tensor
+
+variable        avegyr_xx equal ave(c_gyr[1])
+variable        avegyr_yy equal ave(c_gyr[2])
+variable        avegyr_zz equal ave(c_gyr[3])
+
+
+fix             13 all ave/time 1 1 100 c_gyr[1] c_gyr[2] c_gyr[3] c_gyr[4] c_gyr[5] c_gyr[6] file gyration.out mode vector
+
+variable        avecom equal ave(c_comnano)
+
+compute         comchunk nano chunk/spread/atom cmol c_comnano[*]
+
+
+dump            1 nano custom 100 dump/dump.nano id mol type x y z c_comchunk[*] 
+dump            2 all custom 100  dump/dump.deposit type x y z vx vy vz
+
+variable        vz index -0.5
+
+velocity        nano set 0 0 ${vz}
+velocity        thermal create 300. 123789 rot yes dist gaussian
+
+variable            chunkstep equal 0.5
+variable            nevery index 1
+variable            nrep index 50
+variable            nfreq index 10000
+
+variable            xmax equal bound(nano,xmax)
+variable            xmin equal bound(nano,xmin)
+variable            ymax equal bound(nano,ymax)
+variable            ymin equal bound(nano,ymin)
+variable            zmax equal bound(nano,zmax)
+variable            zmin equal bound(nano,zmin)
+print "Sussy xmin: ${xmin}"
+compute             cc2 nano chunk/atom bin/3d x ${xmin} ${chunkstep} y ${ymin} ${chunkstep} z ${zmin} ${chunkstep} bound x ${xmin} ${xmax}  bound y ${ymin} ${ymax}  bound z ${zmin} ${zmax}  units box
+fix                 44 nano ave/chunk ${nevery} ${nrep} 10000 cc2 density/number norm sample title1 "xmin ${xmin}" file density.profile
+
+compute             ptm nano ptm/atom default 2.9
+compute             cc3 nano chunk/atom bin/3d x ${xmin} ${chunkstep} y ${ymin} ${chunkstep} z ${zmin} ${chunkstep} bound x ${xmin} ${xmax}  bound y ${ymin} ${ymax}  bound z ${zmin} ${zmax}   units box
+fix                 44 nano ave/chunk ${nevery} ${nrep} 10000 cc3 c_ptm[1] title1 "xmin ${xmin}"  file ptm.profile
+
+fix	            1 free nve
+fix	            2 nano nve
+fix             3 thermal nvt temp 300. 300. 100.
+thermo          10
+thermo_style    custom step temp etotal pe ke
+
+
+run             5000
+
+
