@@ -1,0 +1,109 @@
+dimension           3
+units               metal
+boundary            p p f
+lattice             fcc 4.079
+
+region              box block 0 45 0 45 0 100
+create_box          8 box
+
+pair_style          smatb
+pair_coeff          * * 2.885 10.139 4.033 0.209570656 1.8152764 4.09004704374 5.00926414057 
+mass                * 196.96657 
+
+region              fixed block INF INF INF INF 0 1 side in
+create_atoms        1 region fixed
+group               fixed region fixed
+
+region              thermal block INF INF INF INF 1.1 5
+create_atoms        2 region thermal
+group               thermal region thermal
+
+region              free block 0 INF 0 INF 5.1 10
+create_atoms        3 region free
+group               free region free
+
+region              nano1 block 0 INF 0 INF 12 26
+region              nano2 block 0 INF 0 INF 18 35
+region              nano3 block 0 INF 0 INF 20 45
+region              nano4 block 0 INF 0 INF 22 55
+region              nano5 block 0 INF 0 INF 24 75 
+
+molecule            nano1 ../test/molecules/Au531MDh462.molecule.therm.molecule
+molecule            nano2 ../test/molecules/Au236spmdh.molecule.therm.molecule
+molecule            nano3 ../test/molecules/Au976To.molecule.therm.molecule
+molecule            nano4 ../test/molecules/Au1289To.molecule.therm.molecule
+
+variable            vz index -0.5
+
+# First deposition step
+create_atoms        3 random 13 311875 nano1 overlap 1.1 maxtry 150 mol nano1 121789 
+create_atoms        4 random 9 542283 nano1 overlap 1.1 maxtry 15000 mol nano2 147345
+create_atoms        5 random 8 645353 nano1 overlap 1.1 maxtry 11550 mol nano3 117345
+create_atoms        6 random 5 145597 nano1 overlap 1.1 maxtry 10550 mol nano4 297345
+
+group               nano type 4 5 6 7 
+
+velocity            nano set 0 0 ${vz}
+write_data          initial.data nocoeff
+
+
+velocity            thermal create 300. 123789 rot yes dist gaussian
+fix                 mv fixed move linear 0 0 0
+neigh_modify        exclude group fixed fixed 
+
+compute             ttherm thermal temp
+compute             tfree free temp
+
+timestep            0.01
+
+thermo              100
+thermo_style        custom step temp pe ke etotal vol c_ttherm c_tfree
+
+fix                 1 thermal nvt temp 300. 300. 100.
+fix                 2 free nve 
+fix                 3 nano nve 
+dump                mydmp all custom 100 dump/dump.lattice x y z vx vy vz type
+run                 5000
+
+write_data          first.data nocoeff
+
+
+# Second deposition step
+create_atoms        3 random 10 122875 nano2 overlap 0.02 maxtry 150 mol nano1 121789 
+create_atoms        4 random 9 535383 nano2 overlap 0.02 maxtry 15000 mol nano2 117341
+create_atoms        5 random 9 155553 nano2 overlap 0.02 maxtry 10550 mol nano3 297345
+create_atoms        6 random 7 147697 nano2 overlap 0.05 maxtry 10550 mol nano4 397345
+group               nano type 4 5 6 7 
+
+velocity            nano set 0 0 ${vz}
+
+run                 5000
+write_data          second.data nocoeff
+
+# Third deposition step
+create_atoms        3 random 10 122875 nano3 overlap 0.02 maxtry 150 mol nano1 121789 
+create_atoms        4 random 9 535383 nano3 overlap 0.02 maxtry 15000 mol nano2 117341
+create_atoms        5 random 9 155553 nano3 overlap 0.02 maxtry 10550 mol nano3 297345
+create_atoms        6 random 7 147697 nano3 overlap 0.05 maxtry 10550 mol nano4 397345
+group               nano type 4 5 6 7 
+
+velocity            nano set 0 0 ${vz}
+
+run                 5000
+write_data          third.data nocoeff
+
+# Fourth deposition step
+create_atoms        3 random 10 132875 nano4 overlap 0.02 maxtry 150 mol nano1 121789 
+create_atoms        4 random 9 534383 nano4 overlap 0.02 maxtry 15000 mol nano2 117341
+create_atoms        5 random 9 156553 nano4 overlap 0.02 maxtry 10550 mol nano3 297345
+create_atoms        6 random 7 647697 nano4 overlap 0.05 maxtry 10550 mol nano4 397345
+group               nano type 4 5 6 7 
+
+velocity            nano set 0 0 ${vz}
+
+run                 5000
+write_data          fourth.data nocoeff
+
+
+
+
